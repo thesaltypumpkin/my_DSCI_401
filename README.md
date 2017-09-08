@@ -1,2 +1,5 @@
-# my_DSCI_401
-A repository for DATA/DSCI 401 code from fall 2017
+# DSCI_401: Foundation and Applications of Data Analytics 
+
+A repository for DATA/DSCI 401 course code. Python - based 
+
+
