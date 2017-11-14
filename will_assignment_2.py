@@ -154,8 +154,8 @@ print('Hand Picked (and categorical) R^2, EVS: ' + str([r2_score(y_test_hp_1, ha
 
 lasso_mod_hp = linear_model.Lasso(alpha=7, normalize=True, fit_intercept=True)
 lasso_mod_hp.fit(x_train_hp_1, y_train_hp_1)
-preds = lasso_mod.predict(x_test_hp_1)
-print('Hand Picked (and Categorical) R^2, EVS: ' + str([r2_score(y_test_hp_1, preds), explained_variance_score(y_test_hp_1, preds)])) 
+preds = lasso_mod_hp.predict(x_test_hp_1)
+print('Hand Picked (and Categorical) Lasso R^2, EVS: ' + str([r2_score(y_test_hp_1, preds), explained_variance_score(y_test_hp_1, preds)])) 
 
 
 #validate on base model 
