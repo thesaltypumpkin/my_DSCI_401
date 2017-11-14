@@ -21,6 +21,7 @@ def cat_features(dataframe):
 
 
 ##MAKE A BASE MODEL##	
+
 df = pd.read_csv('./data/AmesHousingSetA.csv')
 
 #give categorical features dummy variables 
@@ -54,12 +55,16 @@ base_model_preds = base_model.predict(x_test)
 #pprint.pprint(pd.DataFrame({'Actual':y_test, 'Predicted':preds}))
 print('Base Model R^2, EVS: ' + str([r2_score(y_test, base_model_preds), explained_variance_score(y_test, base_model_preds)])) 
 
+##MODEL 2: BASE MODEL LASSO REGRESSION WITH AN ALPH OF 5.0 BEST MODEL##
+
 lasso_mod_base = linear_model.Lasso(alpha=5, normalize=True, fit_intercept=True)
 lasso_mod_base.fit(x_train, y_train)
 preds = lasso_mod_base.predict(x_test)
 print('Lasso Base Model R^2, EVS: ' + str([r2_score(y_test, preds), explained_variance_score(y_test, preds)])) 
 
-##MODEL 2 WITHOUT CATEGORICAL FEATURES##
+
+##MODEL 3: WITHOUT CATEGORICAL FEATURES##
+
 df_remove_cat = pd.read_csv('./data/AmesHousingSetA.csv')
 cat_f = cat_features(df_remove_cat)
 
@@ -88,12 +93,12 @@ model_rc_preds = model_rc.predict(x_test_rc)
 
 print('categorical features removed R^2, EVS: ' + str([r2_score(y_test_rc, model_rc_preds), explained_variance_score(y_test_rc, model_rc_preds)])) 
 
-##Model 3 Hand Picked features from numerical only##
+##Model 4: Hand Picked features from numerical only##
 
 #hand pick the features
 #V.1 Features are not categorical in nature, picked after looking at graphs and noticing upward linear correlations
-#V.2 added back in categorical features 
-#.01 point better then the base model... 
+#V.2 added back in categorical features
+#IMPORTANT NOTE: did feature selector methods with this model, and got consistently worse R^2 scores when compared to base model. 
 df_1 = pd.read_csv('./data/AmesHousingSetA.csv')
 df_hand_picked_one = pd.DataFrame()
 df_hand_picked_one["Overall.Qual"]  = df_1["Overall.Qual"]   
@@ -134,9 +139,7 @@ data_x_hp_1 = imp3.fit_transform(data_x_hp_1)
 #train/test split 
 x_train_hp_1, x_test_hp_1, y_train_hp_1, y_test_hp_1 = train_test_split(data_x_hp_1, data_y_hp_1, test_size = 0.2, random_state = 4)
 
-
-
-#make hand picked model v.1
+#make the model 
 hand_picked_one_model = linear_model.LinearRegression()
 hand_picked_one_model.fit(x_train_hp_1,y_train_hp_1)
 
@@ -147,34 +150,36 @@ hand_picked_one_preds = hand_picked_one_model.predict(x_test_hp_1)
 #pprint.pprint(pd.DataFrame({'Actual':y_test, 'Predicted':preds}))
 print('Hand Picked (and categorical) R^2, EVS: ' + str([r2_score(y_test_hp_1, hand_picked_one_preds), explained_variance_score(y_test_hp_1, hand_picked_one_preds)])) 
 
+##MODEL 5: HAND PICKED MODEL WITH LASSO REGRESSION ALPHA = 7##
 
-lasso_mod = linear_model.Lasso(alpha=7, normalize=True, fit_intercept=True)
-lasso_mod.fit(x_train_hp_1, y_train_hp_1)
+lasso_mod_hp = linear_model.Lasso(alpha=7, normalize=True, fit_intercept=True)
+lasso_mod_hp.fit(x_train_hp_1, y_train_hp_1)
 preds = lasso_mod.predict(x_test_hp_1)
 print('Hand Picked (and Categorical) R^2, EVS: ' + str([r2_score(y_test_hp_1, preds), explained_variance_score(y_test_hp_1, preds)])) 
 
 
 #validate on base model 
-df_v_b = pd.read_csv('./data/AmesHousingSetB.csv')
+#GOT AN ERROR HERE DISCUSED IN WRITE UP
+#df_v_b = pd.read_csv('./data/AmesHousingSetB.csv')
 
 #give categorical features dummy variables 
-df_v_b = pd.get_dummies(df_v_b, columns = cat_features(df_v_b))
+#df_v_b = pd.get_dummies(df_v_b, columns = cat_features(df_v_b))
 
 
 #Set up a data X and data Y
-del df_v_b['PID']
-features = list(df_v_b)
-features.remove('SalePrice')
+#del df_v_b['PID']
+#features = list(df_v_b)
+#features.remove('SalePrice')
 
-data_x_v = df_v_b[features]
-data_y_v = df_v_b['SalePrice']
+#data_x_v = df_v_b[features]
+#data_y_v = df_v_b['SalePrice']
 
 #fix NaN in Data X
-print("cant trasfomr")
-data_x_v = imp.fit_transform(data_x_v) #imp.transform on data(x) 
+#print("cant trasfomr")
+#data_x_v = imp.fit_transform(data_x_v) #imp.transform on data(x) 
 
-base_model_v_preds = base_model.predict(data_x_v)
+#base_model_v_preds = base_model.predict(data_x_v)
 
 #print results 
 #pprint.pprint(pd.DataFrame({'Actual':y_test, 'Predicted':preds}))
-print('Base Model R^2, EVS: ' + str([r2_score(data_y_v, base_model_v_preds), explained_variance_score(data_y_v, base_model_v_preds)])) 
+#print('Base Model R^2, EVS: ' + str([r2_score(data_y_v, base_model_v_preds), explained_variance_score(data_y_v, base_model_v_preds)])) 
